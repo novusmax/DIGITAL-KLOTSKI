@@ -15,11 +15,7 @@ contract KlotskiLeaderboard {
     ScoreEntry[] private _scores;
 
     event ScoreSubmitted(
-        address indexed player,
-        uint8 indexed gridSize,
-        uint32 moves,
-        uint32 timeSeconds,
-        uint64 timestamp
+        address indexed player, uint8 indexed gridSize, uint32 moves, uint32 timeSeconds, uint64 timestamp
     );
 
     error InvalidGridSize(uint8 gridSize);
@@ -29,24 +25,14 @@ contract KlotskiLeaderboard {
 
     /// @notice 提交游戏成绩到链上
     /// @dev 生产环境中建议在此处增加 EIP-712 签名验证，防止黑客伪造超神成绩
-    function submitScore(
-        uint8 gridSize,
-        uint32 moves,
-        uint32 timeSeconds
-    ) external {
+    function submitScore(uint8 gridSize, uint32 moves, uint32 timeSeconds) external {
         if (gridSize < 3 || gridSize > 5) revert InvalidGridSize(gridSize);
         if (moves == 0) revert InvalidMoves();
         if (timeSeconds == 0) revert InvalidTime();
 
         uint64 ts = uint64(block.timestamp);
         _scores.push(
-            ScoreEntry({
-                player: msg.sender,
-                gridSize: gridSize,
-                moves: moves,
-                timeSeconds: timeSeconds,
-                timestamp: ts
-            })
+            ScoreEntry({player: msg.sender, gridSize: gridSize, moves: moves, timeSeconds: timeSeconds, timestamp: ts})
         );
 
         emit ScoreSubmitted(msg.sender, gridSize, moves, timeSeconds, ts);
@@ -60,10 +46,7 @@ contract KlotskiLeaderboard {
     /// @notice 分页获取所有成绩 (防止数据量过大导致 RPC 崩溃)
     /// @param offset 起始索引
     /// @param limit 读取数量
-    function getScoresPaginated(
-        uint256 offset,
-        uint256 limit
-    ) external view returns (ScoreEntry[] memory) {
+    function getScoresPaginated(uint256 offset, uint256 limit) external view returns (ScoreEntry[] memory) {
         uint256 totalLength = _scores.length;
         if (offset >= totalLength) revert OutOfBounds();
 
@@ -83,9 +66,7 @@ contract KlotskiLeaderboard {
     }
 
     /// @notice 配合前端: 逆序分页获取最新成绩 (适合展示最新上链记录)
-    function getLatestScores(
-        uint256 limit
-    ) external view returns (ScoreEntry[] memory) {
+    function getLatestScores(uint256 limit) external view returns (ScoreEntry[] memory) {
         uint256 totalLength = _scores.length;
         if (totalLength == 0) return new ScoreEntry[](0);
 
