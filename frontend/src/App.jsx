@@ -616,7 +616,7 @@ const App = () => {
                   className="px-8 py-3 text-slate-800 font-bold rounded-xl hover:-translate-y-1 active:translate-y-0 transition-all duration-200"
                   style={{ backgroundColor: 'var(--theme-main)', boxShadow: '0 4px 14px var(--theme-shadow-md)' }}
                 >
-                  查看记录 / 再来一局
+                  再来一局
                 </button>
               </div>
             )}
